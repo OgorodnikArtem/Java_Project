@@ -1,0 +1,18 @@
+<math_operations>
+    <addition>
+        <operand1>5</operand1>
+        <operand2>3</operand2>
+    </addition>
+    <subtraction>
+        <operand1>10</operand1>
+        <operand2>4</operand2>
+    </subtraction>
+    <multiplication>
+        <operand1>6</operand1>
+        <operand2>7</operand2>
+    </multiplication>
+    <division>
+        <operand1>15</operand1>
+        <operand2>3</operand2>
+    </division>
+</math_operations>

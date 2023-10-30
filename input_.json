@@ -1,0 +1,30 @@
+{
+  "tasks": [
+    {
+      "task_number": 1,
+      "equation": "2 + 1",
+      "variable_values": {
+        "a": 2,
+        "b": 5,
+        "c": 1,
+        "x": 3
+      }
+    },
+    {
+      "task_number": 2,
+      "equation": "3 * x + 2",
+      "variable_values": {
+        "x": 3,
+        "y": 2
+      }
+    },
+    {
+      "task_number": 3,
+      "equation": "5 * p - l * 4",
+      "variable_values": {
+        "p": 4,
+        "l": -3
+      }
+    }
+  ]
+}

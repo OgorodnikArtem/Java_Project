@@ -20,7 +20,7 @@
     },
     {
       "task_number": 3,
-      "equation": "5 * p - l * 4",
+      "equation": "5 * p * l - 4",
       "variable_values": {
         "p": 4,
         "l": -3

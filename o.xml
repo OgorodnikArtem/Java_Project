@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<arithmeticOperations>
+  <operation>
+    <operator> </operator>
+    <operand1>x</operand1>
+    <operand2> c</operand2>
+    <result>4.0</result>
+  </operation>
+  <operation>
+    <operator>.</operator>
+    <operand1>3</operand1>
+    <operand2> * x + 2.0 * y</operand2>
+    <result>10.0</result>
+  </operation>
+  <operation>
+    <operator>.</operator>
+    <operand1>4</operand1>
+    <operand2> * a - 6.0</operand2>
+    <result>18.0</result>
+  </operation>
+</arithmeticOperations>

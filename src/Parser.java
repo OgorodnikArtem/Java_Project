@@ -1,16 +1,18 @@
 import org.json.JSONArray;
 import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.io.PrintWriter;
 
-public class parser {
-    private String data;
+public class Parser {
+    private static String data;
 
-    private parser(Builder builder) {
+    private Parser(Builder builder) {
         this.data = builder.data;
     }
 
@@ -21,12 +23,12 @@ public class parser {
             this.data = data;
         }
 
-        public parser build() {
-            return new parser(this);
+        public Parser build() {
+            return new Parser(this);
         }
     }
 
-    public void parseAndProcessFile(String fileName) {
+    public static void parseAndProcessFile(String fileName) {
         if (fileName.endsWith(".json")) {
             data = readFile(fileName);
             processJsonData();
@@ -38,7 +40,7 @@ public class parser {
         }
     }
 
-    public void processJsonData() {
+    public static void processJsonData() {
         if (data.isEmpty()) {
             System.err.println("Нет данных для обработки.");
             return;
@@ -65,45 +67,68 @@ public class parser {
         }
     }
 
-    private double evaluateArithmeticExpression(String equation, JSONObject variableValues) {
+    private static double evaluateArithmeticExpression(String equation, JSONObject variableValues) {
         // Подстановка значений переменных в уравнение
         for (Object variable : variableValues.keySet()) {
             equation = equation.replaceAll((String) variable, String.valueOf(variableValues.getDouble((String) variable)));
         }
 
-        // Вычисление арифметического выражения с учетом умножения и вычитания
+        // Вычисление арифметического выражения с учетом приоритета знаков
         String[] parts = equation.split(" ");
-        double total = Double.parseDouble(parts[0]);
+        Stack<Double> values = new Stack<>();
+        Stack<String> operators = new Stack<>();
 
-        for (int i = 1; i < parts.length - 1; i += 2) {
-            String operator = parts[i];
-            double operand = Double.parseDouble(parts[i + 1]);
-
-            if (operator.equals("*")) {
-                total *= operand;
-            }else if (operator.equals("/")) {
-                total /= operand;
-            } else if (operator.equals("+")) {
-                total += operand;
-            }
-            else if (operator.equals("-")) {
-                total -= operand;
+        for (String part : parts) {
+            if (part.matches("[+\\-*/]")) {
+                while (!operators.isEmpty() && hasPrecedence(part, operators.peek())) {
+                    double operand2 = values.pop();
+                    double operand1 = values.pop();
+                    values.push(applyOperator(operators.pop(), operand1, operand2));
+                }
+                operators.push(part);
+            } else {
+                values.push(Double.parseDouble(part));
             }
         }
 
-        return total;
+        while (!operators.isEmpty()) {
+            double operand2 = values.pop();
+            double operand1 = values.pop();
+            values.push(applyOperator(operators.pop(), operand1, operand2));
+        }
+
+        return values.pop();
     }
 
+    private static boolean hasPrecedence(String operator1, String operator2) {
+        return (operator2.equals("*") || operator2.equals("/")) &&
+                (operator1.equals("+") || operator1.equals("-"));
+    }
 
+    private static double applyOperator(String operator, double operand1, double operand2) {
+        switch (operator) {
+            case "+":
+                return operand1 + operand2;
+            case "-":
+                return operand1 - operand2;
+            case "*":
+                return operand1 * operand2;
+            case "/":
+                return operand1 / operand2;
+            default:
+                throw new IllegalArgumentException("Неверный оператор: " + operator);
+        }
+    }
 
-    private void writeOutput(String content) {
+    private static void writeOutput(String content) {
         try (PrintWriter writer = new PrintWriter("output.txt")) {
             writer.println(content);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-    void findAndCountArithmeticOperations() {
+
+    static void findAndCountArithmeticOperations() {
         String regex = "(\\d+\\s*[+\\-*/]\\s*\\d+)";
         try {
             Pattern pattern = Pattern.compile(regex);
@@ -141,8 +166,7 @@ public class parser {
         }
     }
 
-
-    private String readFile(String fileName) {
+    private static String readFile(String fileName) {
         StringBuilder fileData = new StringBuilder();
         try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
             String line;

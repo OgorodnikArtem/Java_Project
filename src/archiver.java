@@ -1,27 +1,16 @@
 import java.io.*;
-import java.util.zip.ZipFile;
-import java.util.zip.ZipEntry;
 import java.util.Enumeration;
+import java.util.zip.ZipFile;
+import java.util.zip.ZipOutputStream;
+import java.util.zip.ZipEntry;
 import com.github.junrar.Archive;
 import com.github.junrar.exception.RarException;
+import com.github.junrar.rarfile.FileHeader;
 import org.apache.commons.io.FileUtils;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import com.github.junrar.rarfile.FileHeader;
-
-
-
-
-
-
-
-
-
-
-
-
-
+import java.io.FileInputStream;
 
 
 class archiver {
@@ -89,5 +78,28 @@ class archiver {
             }
         }
         return null;
+    }
+
+
+    public void archiveData(String sourceFileName) {
+        try {
+            FileOutputStream fos = new FileOutputStream("output.zip");
+            ZipOutputStream zipOut = new ZipOutputStream(fos);
+            File fileToZip = new File(sourceFileName);
+            FileInputStream fis = new FileInputStream(fileToZip);
+            ZipEntry zipEntry = new ZipEntry(fileToZip.getName());
+            zipOut.putNextEntry(zipEntry);
+            byte[] bytes = new byte[1024];
+            int length;
+            while ((length = fis.read(bytes)) >= 0) {
+                zipOut.write(bytes, 0, length);
+            }
+            fis.close();
+            zipOut.close();
+            fos.close();
+            System.out.println("File has been archived successfully to output.zip");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -6,9 +6,9 @@ import java.io.*;
 
 public class FileProcessingUI extends JFrame {
 
-    private JTextField fileNameField;
-    private JButton processButton;
-    private JTextArea outputArea;
+    private final JTextField fileNameField;
+
+    private final JTextArea outputArea;
 
     public FileProcessingUI() {
         // Настройка основного окна
@@ -18,8 +18,11 @@ public class FileProcessingUI extends JFrame {
 
         // Создание компонентов UI
         fileNameField = new JTextField(20);
-        processButton = new JButton("Обработать");
+        JButton processButton = new JButton("Обработать");
+        JButton processButton_ = new JButton("Архивировать");
+        JButton processButton_e = new JButton("Остановить");
         outputArea = new JTextArea(10, 30);
+
 
         // Установка Layout Manager
         setLayout(new BorderLayout());
@@ -29,6 +32,8 @@ public class FileProcessingUI extends JFrame {
         inputPanel.add(new JLabel("Имя файла: "));
         inputPanel.add(fileNameField);
         inputPanel.add(processButton);
+        inputPanel.add(processButton_);
+        inputPanel.add(processButton_e);
 
         // Добавление компонентов в окно
         add(inputPanel, BorderLayout.NORTH);
@@ -41,6 +46,33 @@ public class FileProcessingUI extends JFrame {
                 processFile();
             }
         });
+
+        processButton_.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                archiveFile();
+                outputArea.setText("Файл архивирован");
+            }
+        });
+
+        processButton_e.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.exit(0);
+            }
+        });
+    }
+
+
+    private void archiveFile() {
+        String fileName = fileNameField.getText();
+        boolean isArchived = isArchived(fileName);
+
+        archiver archiver = new archiver.Builder(fileName)
+                .isArchived(isArchived)
+                .build();
+
+        archiver.archiveData(fileName);
     }
 
     private void processFile() {
@@ -55,7 +87,7 @@ public class FileProcessingUI extends JFrame {
             fileName = archiver.extractFiles();
         }
 
-        String data = readFile(fileName);
+        StringBuilder data = new StringBuilder(readFile(fileName));
 
         if (isArchived) {
             File extractedFolder = new File("extracted_files");
@@ -65,17 +97,17 @@ public class FileProcessingUI extends JFrame {
                     for (File extractedFile : extractedFiles) {
                         if (extractedFile.isFile()) {
                             String extractedData = readFile(extractedFile.getPath());
-                            data += "\n" + extractedData;
+                            data.append("\n").append(extractedData);
                         }
                     }
                 }
             }
         }
 
-        parser parser = new parser.Builder(data)
+        Parser Parser = new Parser.Builder(data.toString())
                 .build();
 
-        parser.parseAndProcessFile(fileName);
+        Parser.parseAndProcessFile(fileName);
 
         // Вывод результата в текстовую область
         outputArea.setText("Файл обработан");
@@ -121,7 +153,7 @@ public class FileProcessingUI extends JFrame {
                 consoleFileName = archiver.extractFiles();
             }
 
-            String consoleData = readFile(consoleFileName);
+            StringBuilder consoleData = new StringBuilder(readFile(consoleFileName));
 
             if (isArchived) {
                 File extractedFolder = new File("extracted_files");
@@ -131,17 +163,17 @@ public class FileProcessingUI extends JFrame {
                         for (File extractedFile : extractedFiles) {
                             if (extractedFile.isFile()) {
                                 String extractedData = readFile(extractedFile.getPath());
-                                consoleData += "\n" + extractedData;
+                                consoleData.append("\n").append(extractedData);
                             }
                         }
                     }
                 }
             }
 
-            parser parser = new parser.Builder(consoleData)
+            Parser parser = new Parser.Builder(consoleData.toString())
                     .build();
 
-            parser.parseAndProcessFile(consoleFileName);
+            Parser.parseAndProcessFile(consoleFileName);
 
             System.out.println("Результат из консольного интерфейса: " + consoleData);
 

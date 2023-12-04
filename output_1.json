@@ -4,27 +4,30 @@
       "task_number": 1,
       "equation": "x + c",
       "variable_values": {
-        "a": 2,
-        "b": 5,
-        "c": 1,
-        "x": 3
-      }
+    "a": 2,
+    "b": 5,
+    "c": 1,
+    "x": 3
+},
+      "result": 4.0
     },
     {
       "task_number": 2,
       "equation": "3.0 * x + 2.0 * y",
       "variable_values": {
-        "x": 2,
-        "y": 2
-      }
+    "x": 2,
+    "y": 2
+},
+      "result": 10.0
     },
     {
       "task_number": 3,
       "equation": "4.0 * a - 6.0",
       "variable_values": {
-        "a": 6,
-        "b": -3
-      }
+    "a": 6,
+    "b": -3
+},
+      "result": 18.0
     }
   ]
 }

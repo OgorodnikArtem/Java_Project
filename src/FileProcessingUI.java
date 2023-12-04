@@ -8,20 +8,23 @@ public class FileProcessingUI extends JFrame {
 
     private final JTextField fileNameField;
 
+    JTextField outputFileNameField = new JTextField(10);
+
+    JTextField outputFileFormatField = new JTextField(10);
     private final JTextArea outputArea;
 
     public FileProcessingUI() {
         // Настройка основного окна
         setTitle("Обработка файла");
-        setSize(400, 300);
+        setSize(2000, 500);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         // Создание компонентов UI
-        fileNameField = new JTextField(20);
+        fileNameField = new JTextField(10);
         JButton processButton = new JButton("Обработать");
         JButton processButton_ = new JButton("Архивировать");
         JButton processButton_e = new JButton("Остановить");
-        outputArea = new JTextArea(10, 30);
+        outputArea = new JTextArea(10, 10);
 
 
         // Установка Layout Manager
@@ -31,6 +34,10 @@ public class FileProcessingUI extends JFrame {
         JPanel inputPanel = new JPanel();
         inputPanel.add(new JLabel("Имя файла: "));
         inputPanel.add(fileNameField);
+        inputPanel.add(new JLabel("Имя выходного файла: "));
+        inputPanel.add(outputFileNameField);
+        inputPanel.add(new JLabel("Формат выходного файла: "));
+        inputPanel.add(outputFileFormatField);
         inputPanel.add(processButton);
         inputPanel.add(processButton_);
         inputPanel.add(processButton_e);
@@ -77,6 +84,14 @@ public class FileProcessingUI extends JFrame {
 
     private void processFile() {
         String fileName = fileNameField.getText();
+        String outputFileName = outputFileNameField.getText();
+        String outputFileFormat = outputFileFormatField.getText();
+        String outputFileName_ = outputFileName + "." + outputFileFormat;
+
+        if (fileName.isEmpty() || outputFileName.isEmpty() || outputFileFormat.isEmpty()) {
+            outputArea.setText("Пожалуйста, заполните все поля.");
+            return;
+        }
         boolean isArchived = isArchived(fileName);
 
         archiver archiver = new archiver.Builder(fileName)
@@ -107,10 +122,10 @@ public class FileProcessingUI extends JFrame {
         Parser Parser = new Parser.Builder(data.toString())
                 .build();
 
-        Parser.parseAndProcessFile(fileName);
+        //Parser.parseAndProcessFile(fileName, outputFileName_);
 
         // Вывод результата в текстовую область
-        outputArea.setText("Файл обработан");
+        outputArea.setText(" Входящий файл : \n" + Parser.parseAndProcessFile(fileName, outputFileName_));
     }
 
     private static boolean isArchived(String fileName) {
@@ -142,6 +157,7 @@ public class FileProcessingUI extends JFrame {
         try (BufferedReader consoleReader = new BufferedReader(new InputStreamReader(System.in))) {
             System.out.print("Введите имя файла для консольного интерфейса: ");
             String consoleFileName = consoleReader.readLine();
+            String outputfilename = consoleReader.readLine();
 
             boolean isArchived = isArchived(consoleFileName);
 
@@ -173,7 +189,7 @@ public class FileProcessingUI extends JFrame {
             Parser parser = new Parser.Builder(consoleData.toString())
                     .build();
 
-            Parser.parseAndProcessFile(consoleFileName);
+            Parser.parseAndProcessFile(consoleFileName , outputfilename);
 
             System.out.println("Результат из консольного интерфейса: " + consoleData);
 

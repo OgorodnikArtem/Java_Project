@@ -28,19 +28,21 @@ public class Parser {
         }
     }
 
-    public static void parseAndProcessFile(String fileName) {
+    public static String parseAndProcessFile(String fileName , String outputFileName) {
         if (fileName.endsWith(".json")) {
             data = readFile(fileName);
-            processJsonData();
+            processJsonData(outputFileName);
         } else if (fileName.endsWith(".txt")) {
             data = readFile(fileName);
-            findAndCountArithmeticOperations();
+            findAndCountArithmeticOperations(outputFileName);
         } else {
             System.err.println("Неподдерживаемый формат файла");
         }
+        return data;
     }
 
-    public static void processJsonData() {
+
+    private static void processJsonData(String outputFileName) {
         if (data.isEmpty()) {
             System.err.println("Нет данных для обработки.");
             return;
@@ -51,18 +53,43 @@ public class Parser {
             JSONArray tasks = jsonObject.getJSONArray("tasks");
 
             StringBuilder results = new StringBuilder();
+            results.append("{\n  \"tasks\": [\n");
 
             for (int i = 0; i < tasks.length(); i++) {
                 JSONObject task = tasks.getJSONObject(i);
+                int taskNumber = task.getInt("task_number");
                 String equation = task.getString("equation");
                 JSONObject variableValues = task.getJSONObject("variable_values");
 
                 double result = evaluateArithmeticExpression(equation, variableValues);
-                results.append("Результат для уравнения: ").append(equation).append(" = ").append(result).append("\n");
+                results.append("    {\n")
+                        .append("      \"task_number\": ").append(taskNumber).append(",\n")
+                        .append("      \"equation\": \"").append(equation).append("\",\n")
+                        .append("      \"variable_values\": ").append(variableValues.toString(4)).append(",\n")
+                        .append("      \"result\": ").append(result).append("\n")
+                        .append("    }");
+
+                if (i < tasks.length() - 1) {
+                    results.append(",");
+                }
+
+                results.append("\n");
             }
 
-            writeOutput(results.toString());
+            results.append("  ]\n}");
+
+            writeJsonOutput(results.toString(), outputFileName);
         } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
+    private static void writeJsonOutput(String content, String outputFileName) {
+        try (PrintWriter writer = new PrintWriter(outputFileName)) {
+            writer.println(content);
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
@@ -120,15 +147,16 @@ public class Parser {
         }
     }
 
-    private static void writeOutput(String content) {
-        try (PrintWriter writer = new PrintWriter("output.txt")) {
+    static String writeOutput(String content , String outputFileName) {
+        try (PrintWriter writer = new PrintWriter(outputFileName)) {
             writer.println(content);
         } catch (IOException e) {
             e.printStackTrace();
         }
+        return content;
     }
 
-    static void findAndCountArithmeticOperations() {
+    static void findAndCountArithmeticOperations(String outputFileName) {
         String regex = "(\\d+\\s*[+\\-*/]\\s*\\d+)";
         try {
             Pattern pattern = Pattern.compile(regex);
@@ -159,7 +187,7 @@ public class Parser {
                 count++;
             }
 
-            writeOutput(results.toString());
+            writeOutput(results.toString() , outputFileName);
 
         } catch (Exception e) {
             e.printStackTrace();

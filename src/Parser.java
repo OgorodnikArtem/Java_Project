@@ -42,7 +42,6 @@ public class Parser {
             this.result = result;
         }
 
-        // Далее добавляем геттеры для каждого поля (можно сгенерировать их автоматически в большинстве сред разработки)
         public int getExpressionNumber() {
             return expressionNumber;
         }
@@ -82,7 +81,7 @@ public class Parser {
             Matcher matcher = pattern.matcher(data);
 
             List<Results> resultsList = new ArrayList<>();
-            int expressionNumber = 1; // Начинаем с 1
+            int expressionNumber = 1;
 
             while (matcher.find()) {
                 String match = matcher.group();
@@ -158,29 +157,6 @@ public class Parser {
                 throw new IllegalArgumentException("Invalid operator: " + operator);
         }
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     private static void processJsonData(String outputFileName) {
@@ -284,12 +260,10 @@ public class Parser {
 
 
     private static double evaluateArithmeticExpression(String equation, JSONObject variableValues) {
-        // Подстановка значений переменных в уравнение
         for (Object variable : variableValues.keySet()) {
             equation = equation.replaceAll((String) variable, String.valueOf(variableValues.getDouble((String) variable)));
         }
 
-        // Вычисление арифметического выражения с учетом приоритета знаков
         String[] parts = equation.split(" ");
         Stack<Double> values = new Stack<>();
         Stack<String> operators = new Stack<>();
@@ -335,96 +309,6 @@ public class Parser {
                 throw new IllegalArgumentException("Неверный оператор: " + operator);
         }
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    private static double evaluateArithmeticExpression_(String content, JSONObject variableValues) {
-        // Подстановка значений переменных в текстовом содержимом
-        for (Object variable : variableValues.keySet()) {
-            content = content.replaceAll((String) variable, String.valueOf(variableValues.getDouble((String) variable)));
-        }
-
-        // Вычисление арифметического выражения с учетом приоритета знаков
-        String[] parts = content.split(" ");
-        Stack<Double> values = new Stack<>();
-        Stack<String> operators = new Stack<>();
-
-        for (String part : parts) {
-            if (part.matches("[+\\-*/]")) {
-                while (!operators.isEmpty() && hasPrecedence(part, operators.peek())) {
-                    double operand2 = values.pop();
-                    double operand1 = values.pop();
-                    values.push(applyOperator(operators.pop(), operand1, operand2));
-                }
-                operators.push(part);
-            } else {
-                values.push(Double.parseDouble(part));
-            }
-        }
-
-        while (!operators.isEmpty()) {
-            double operand2 = values.pop();
-            double operand1 = values.pop();
-            values.push(applyOperator(operators.pop(), operand1, operand2));
-        }
-
-        return values.pop();
-    }
-
-    private static boolean hasPrecedence_(String operator1, String operator2) {
-        return (operator2.equals("*") || operator2.equals("/")) &&
-                (operator1.equals("+") || operator1.equals("-"));
-    }
-
-    private static double applyOperator_(String operator, double operand1, double operand2) {
-        switch (operator) {
-            case "+":
-                return operand1 + operand2;
-            case "-":
-                return operand1 - operand2;
-            case "*":
-                return operand1 * operand2;
-            case "/":
-                return operand1 / operand2;
-            default:
-                throw new IllegalArgumentException("Неверный оператор: " + operator);
-        }
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     private static String readFile(String fileName) {
         StringBuilder fileData = new StringBuilder();

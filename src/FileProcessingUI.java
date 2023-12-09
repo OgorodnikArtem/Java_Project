@@ -14,12 +14,10 @@ public class FileProcessingUI extends JFrame {
     private final JTextArea outputArea;
 
     public FileProcessingUI() {
-        // Настройка основного окна
         setTitle("Обработка файла");
         setSize(2000, 500);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        // Создание компонентов UI
         fileNameField = new JTextField(10);
         JButton processButton = new JButton("Обработать");
         JButton processButton_ = new JButton("Архивировать");
@@ -27,10 +25,8 @@ public class FileProcessingUI extends JFrame {
         outputArea = new JTextArea(10, 10);
 
 
-        // Установка Layout Manager
         setLayout(new BorderLayout());
 
-        // Панель для ввода имени файла
         JPanel inputPanel = new JPanel();
         inputPanel.add(new JLabel("Имя файла: "));
         inputPanel.add(fileNameField);
@@ -42,11 +38,9 @@ public class FileProcessingUI extends JFrame {
         inputPanel.add(processButton_);
         inputPanel.add(processButton_e);
 
-        // Добавление компонентов в окно
         add(inputPanel, BorderLayout.NORTH);
         add(new JScrollPane(outputArea), BorderLayout.CENTER);
 
-        // Добавление обработчика события для кнопки
         processButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -124,7 +118,6 @@ public class FileProcessingUI extends JFrame {
 
         //Parser.parseAndProcessFile(fileName, outputFileName_);
 
-        // Вывод результата в текстовую область
         outputArea.setText(" Входящий файл : \n" + Parser.parseAndProcessFile(fileName, outputFileName_));
     }
 
@@ -146,14 +139,12 @@ public class FileProcessingUI extends JFrame {
     }
 
     public static void main(String[] args) {
-        // Запуск графического интерфейса в отдельном потоке
         SwingUtilities.invokeLater(() -> {
             FileProcessingUI ui = new FileProcessingUI();
             ui.setTitle("Графический UI");
             ui.setVisible(true);
         });
 
-        // Запуск консольного интерфейса в основном потоке
         try (BufferedReader consoleReader = new BufferedReader(new InputStreamReader(System.in))) {
             System.out.print("Введите имя файла для консольного интерфейса: ");
             String consoleFileName = consoleReader.readLine();

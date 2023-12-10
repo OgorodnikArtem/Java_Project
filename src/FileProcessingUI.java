@@ -21,6 +21,8 @@ public class FileProcessingUI extends JFrame {
         fileNameField = new JTextField(10);
         JButton processButton = new JButton("Обработать");
         JButton processButton_ = new JButton("Архивировать");
+        JButton processButton_encryptor = new JButton("Зашифровать");
+        JButton processButton_decryptor = new JButton("Расшифровать");
         JButton processButton_e = new JButton("Остановить");
         outputArea = new JTextArea(10, 10);
 
@@ -36,6 +38,8 @@ public class FileProcessingUI extends JFrame {
         inputPanel.add(outputFileFormatField);
         inputPanel.add(processButton);
         inputPanel.add(processButton_);
+        inputPanel.add(processButton_encryptor);
+        inputPanel.add(processButton_decryptor);
         inputPanel.add(processButton_e);
 
         add(inputPanel, BorderLayout.NORTH);
@@ -45,6 +49,20 @@ public class FileProcessingUI extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 processFile();
+            }
+        });
+
+        processButton_encryptor.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                EncryptFile();
+            }
+        });
+
+        processButton_decryptor.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                DecryptFile();
             }
         });
 
@@ -64,6 +82,26 @@ public class FileProcessingUI extends JFrame {
         });
     }
 
+    private void EncryptFile() {
+        String fileName = fileNameField.getText();
+        FileEncryptor fileEncryptor = new FileEncryptor.Builder(fileName)
+                .build();
+
+        fileEncryptor.encryptFile(fileName, "en_" + fileName);
+        outputArea.setText("Файл успешно зашифрован .");
+    }
+
+
+
+
+    private void DecryptFile() {
+        String fileName = fileNameField.getText();
+        FileEncryptor fileDecryptor = new FileEncryptor.Builder(fileName)
+                .build();
+
+        fileDecryptor.decryptFile(fileName , "de_" + fileName);
+        outputArea.setText("Файл успешно расшифрован .");
+    }
 
     private void archiveFile() {
         String fileName = fileNameField.getText();

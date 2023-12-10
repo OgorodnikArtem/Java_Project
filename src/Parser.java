@@ -11,6 +11,24 @@ import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import java.io.StringReader;
+
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import java.io.PrintWriter;
+
+
 public class Parser {
     private static String data;
 
@@ -57,7 +75,10 @@ public class Parser {
 
 
     public static String parseAndProcessFile(String fileName, String outputFileName) {
-        if (fileName.endsWith(".json")) {
+        if (fileName.endsWith(".xml")) {
+            data = readFile(fileName);
+            processXmlData(outputFileName);
+        }if (fileName.endsWith(".json")) {
             data = readFile(fileName);
             processJsonData(outputFileName);
         } else if (fileName.endsWith(".txt")) {
@@ -100,7 +121,16 @@ public class Parser {
 
             }
 
-            writeTxtOutput(result_, outputFileName , l_);
+            if(outputFileName.endsWith(".txt")) {
+                writeTxtOutput(result_, outputFileName, l_);
+            }else if(outputFileName.endsWith(".json")) {
+                writeJsonOutput(result_, outputFileName, l_);
+            }else if(outputFileName.endsWith(".xml")) {
+                writeXmlOutput(result_, outputFileName, l_);
+            }
+
+
+
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -193,12 +223,108 @@ public class Parser {
                 writeJsonOutput(results_m, outputFileName , n_);
             }else if(outputFileName.endsWith(".txt")){
                 writeTxtOutput(results_m , outputFileName , n_);
+            } else if(outputFileName.endsWith(".xml")) {
+                writeXmlOutput(results_m, outputFileName, n_);
             }
 
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
+
+    private static void processXmlData(String outputFileName) {
+        if (data.isEmpty()) {
+            System.err.println("Нет данных для обработки.");
+            return;
+        }
+
+        try {
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder builder = factory.newDocumentBuilder();
+            Document document = builder.parse(new InputSource(new StringReader(data)));
+
+            Element root = document.getDocumentElement();
+            NodeList operationNodes = root.getElementsByTagName("operation");
+
+            Results[] results_m = new Results[operationNodes.getLength()];
+            int n_ = operationNodes.getLength();
+
+            for (int i = 0; i < operationNodes.getLength(); i++) {
+                Node operationNode = operationNodes.item(i);
+                if (operationNode.getNodeType() == Node.ELEMENT_NODE) {
+                    Element operationElement = (Element) operationNode;
+                    String operator = operationElement.getElementsByTagName("operator").item(0).getTextContent();
+                    double operand1 = Double.parseDouble(operationElement.getElementsByTagName("operand1").item(0).getTextContent());
+                    double operand2 = Double.parseDouble(operationElement.getElementsByTagName("operand2").item(0).getTextContent());
+                    double result = Double.parseDouble(operationElement.getElementsByTagName("result").item(0).getTextContent());
+
+                    Results resultObject = new Results(i + 1, operator + operand1 + operator + operand2, result);
+                    results_m[i] = resultObject;
+                }
+            }
+
+            if(outputFileName.endsWith(".txt")) {
+                writeTxtOutput(results_m, outputFileName, n_);
+            }else if(outputFileName.endsWith(".json")) {
+                writeJsonOutput(results_m, outputFileName, n_);
+            }else if(outputFileName.endsWith(".xml")) {
+                writeXmlOutput(results_m, outputFileName, n_);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    private static void writeXmlOutput(Results[] results_m, String outputFileName, int n_) {
+        try {
+            DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+
+            Document doc = docBuilder.newDocument();
+            Element rootElement = doc.createElement("arithmeticOperations");
+            doc.appendChild(rootElement);
+
+            for (Results result : results_m) {
+                Element operationElement = doc.createElement("operation");
+
+                Element operatorElement = doc.createElement("operator");
+                operatorElement.appendChild(doc.createTextNode(result.getExpression().substring(1, 2)));
+                operationElement.appendChild(operatorElement);
+
+                Element operand1Element = doc.createElement("operand1");
+                operand1Element.appendChild(doc.createTextNode(result.getExpression().substring(0, 1)));
+                operationElement.appendChild(operand1Element);
+
+                Element operand2Element = doc.createElement("operand2");
+                operand2Element.appendChild(doc.createTextNode(result.getExpression().substring(3)));
+                operationElement.appendChild(operand2Element);
+
+                Element resultElement = doc.createElement("result");
+                resultElement.appendChild(doc.createTextNode(String.valueOf(result.getResult())));
+                operationElement.appendChild(resultElement);
+
+                rootElement.appendChild(operationElement);
+            }
+
+            TransformerFactory transformerFactory = TransformerFactory.newInstance();
+            Transformer transformer = transformerFactory.newTransformer();
+
+            transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+            transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
+
+            DOMSource source = new DOMSource(doc);
+            try (PrintWriter writer = new PrintWriter(outputFileName)) {
+                StreamResult result = new StreamResult(writer);
+                transformer.transform(source, result);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 
 
 

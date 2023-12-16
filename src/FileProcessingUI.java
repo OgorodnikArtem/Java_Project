@@ -101,6 +101,7 @@ public class FileProcessingUI extends JFrame {
 
         fileDecryptor.decryptFile(fileName , "de_" + fileName);
         outputArea.setText("Файл успешно расшифрован .");
+
     }
 
     private void archiveFile() {

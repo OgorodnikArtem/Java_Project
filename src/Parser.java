@@ -257,7 +257,6 @@ public class Parser {
                         double result = performOperation(operator, operand1, operand2);
 
                         Results resultObject = new Results((i + 1)/2, operand1 + " " + operator + " " + operand2, result);
-                        System.out.print(result);
                         results_m[n_++] = resultObject;
                     }
                 }
@@ -365,8 +364,7 @@ public class Parser {
             StringBuilder results = new StringBuilder();
 
             for (int i = 0; i < n_; i++) {
-                results.append("\n")
-                        .append("  \"number\": \"").append(results_m[i].getExpressionNumber()).append("\n")
+                results.append("  \"number\": \"").append(results_m[i].getExpressionNumber()).append("\n")
                         .append("\n")
                         .append("  \"equation\": \"").append(results_m[i].getExpression()).append("\n")
                         .append("  \"result\": ").append(results_m[i].getResult()).append("\n");

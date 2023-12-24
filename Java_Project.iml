@@ -47,5 +47,8 @@
         <SOURCES />
       </library>
     </orderEntry>
+    <orderEntry type="library" name="Java_Project" level="project" />
+    <orderEntry type="library" name="fest-swing" level="project" />
+    <orderEntry type="library" name="easytesting.fest.swing" level="project" />
   </component>
 </module>

@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="fest-swing">
+    <CLASSES />
+    <JAVADOC>
+      <root url="file://$PROJECT_DIR$/META-INF/maven/org.easytesting/fest-swing" />
+    </JAVADOC>
+    <SOURCES />
+  </library>
+</component>

@@ -14,6 +14,9 @@ public class FileProcessingUI extends JFrame {
     final JTextArea outputArea;
 
     public FileProcessingUI() {
+
+        this.setVisible(true);
+
         setTitle("Обработка файла");
         setSize(2000, 500);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

@@ -1,10 +1,7 @@
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
@@ -19,14 +16,21 @@ import org.xml.sax.InputSource;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import java.io.StringReader;
 
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import java.io.PrintWriter;
+
+
+
+
+
+import javax.xml.transform.*;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import java.io.File;
 
 
 public class Parser {
@@ -78,17 +82,18 @@ public class Parser {
         if (fileName.endsWith(".xml")) {
             data = readFile(fileName);
             processXmlData(outputFileName);
-        }if (fileName.endsWith(".json")) {
+        } else if (fileName.endsWith(".json")) {
             data = readFile(fileName);
             processJsonData(outputFileName);
-        } else if (fileName.endsWith(".txt")) {
+        }else if (fileName.endsWith(".txt")) {
             data = readFile(fileName);
             processTxtData(outputFileName);
         } else {
             System.err.println("Неподдерживаемый формат файла");
         }
-        return data;
+            return data;
     }
+
 
 
     private static void processTxtData(String outputFileName) {
@@ -96,7 +101,7 @@ public class Parser {
             System.err.println("Нет данных для обработки.");
             return;
         }
-        String regex = "(\\d+\\s*[+\\-*/]\\s*\\d+)";
+        String regex = "((\\d+\\s*[+\\-*/]\\s*\\d+)|(\\d+(?:\\s*[+\\-*/]\\s*\\d+)*))"; // Updated regex
         try {
             Pattern pattern = Pattern.compile(regex);
             Matcher matcher = pattern.matcher(data);
@@ -113,29 +118,20 @@ public class Parser {
 
             Results[] result_ = resultsList.toArray(new Results[0]);
 
-            int l_ = 0 ;
+            int l_ = resultsList.size(); // Use the size() method to get the number of expressions
 
-
-            for (Results result : resultsList) {
-                l_++;
-
-            }
-
-            if(outputFileName.endsWith(".txt")) {
+            if (outputFileName.endsWith(".txt")) {
                 writeTxtOutput(result_, outputFileName, l_);
-            }else if(outputFileName.endsWith(".json")) {
+            } else if (outputFileName.endsWith(".json")) {
                 writeJsonOutput(result_, outputFileName, l_);
-            }else if(outputFileName.endsWith(".xml")) {
+            } else if (outputFileName.endsWith(".xml")) {
                 writeXmlOutput(result_, outputFileName, l_);
             }
-
-
-
-
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
 
     private static double evaluateExpression(String expression) {
         Stack<Double> operands = new Stack<>();
@@ -232,101 +228,104 @@ public class Parser {
         }
     }
 
+        private static void processXmlData(String outputFileName) {
+            if (data.isEmpty()) {
+                System.err.println("Нет данных для обработки.");
+                return;
+            }
 
-    private static void processXmlData(String outputFileName) {
-        if (data.isEmpty()) {
-            System.err.println("Нет данных для обработки.");
-            return;
-        }
+            try {
+                DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+                DocumentBuilder builder = factory.newDocumentBuilder();
+                Document document = builder.parse(new InputSource(new StringReader(data)));
 
-        try {
-            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder builder = factory.newDocumentBuilder();
-            Document document = builder.parse(new InputSource(new StringReader(data)));
+                Element mathOperationsElement = document.getDocumentElement();
+                NodeList operationNodes = mathOperationsElement.getChildNodes();
 
-            Element root = document.getDocumentElement();
-            NodeList operationNodes = root.getElementsByTagName("operation");
+                Results[] results_m = new Results[operationNodes.getLength()];
+                int n_ = 0;
 
-            Results[] results_m = new Results[operationNodes.getLength()];
-            int n_ = operationNodes.getLength();
+                for (int i = 0; i < operationNodes.getLength(); i++) {
+                    Node operationNode = operationNodes.item(i);
 
-            for (int i = 0; i < operationNodes.getLength(); i++) {
-                Node operationNode = operationNodes.item(i);
-                if (operationNode.getNodeType() == Node.ELEMENT_NODE) {
-                    Element operationElement = (Element) operationNode;
-                    String operator = operationElement.getElementsByTagName("operator").item(0).getTextContent();
-                    double operand1 = Double.parseDouble(operationElement.getElementsByTagName("operand1").item(0).getTextContent());
-                    double operand2 = Double.parseDouble(operationElement.getElementsByTagName("operand2").item(0).getTextContent());
-                    double result = Double.parseDouble(operationElement.getElementsByTagName("result").item(0).getTextContent());
+                    if (operationNode.getNodeType() == Node.ELEMENT_NODE) {
+                        Element operationElement = (Element) operationNode;
 
-                    Results resultObject = new Results(i + 1, operator + operand1 + operator + operand2, result);
-                    results_m[i] = resultObject;
+                        String operator = operationNode.getNodeName();
+                        double operand1 = Double.parseDouble(operationElement.getElementsByTagName("operand1").item(0).getTextContent());
+                        double operand2 = Double.parseDouble(operationElement.getElementsByTagName("operand2").item(0).getTextContent());
+                        double result = performOperation(operator, operand1, operand2);
+
+                        Results resultObject = new Results((i + 1)/2, operand1 + " " + operator + " " + operand2, result);
+                        System.out.print(result);
+                        results_m[n_++] = resultObject;
+                    }
                 }
-            }
 
-            if(outputFileName.endsWith(".txt")) {
-                writeTxtOutput(results_m, outputFileName, n_);
-            }else if(outputFileName.endsWith(".json")) {
-                writeJsonOutput(results_m, outputFileName, n_);
-            }else if(outputFileName.endsWith(".xml")) {
-                writeXmlOutput(results_m, outputFileName, n_);
+                if (outputFileName.endsWith(".txt")) {
+                    writeTxtOutput(results_m, outputFileName, n_);
+                } else if (outputFileName.endsWith(".json")) {
+                    writeJsonOutput(results_m, outputFileName, n_);
+                } else if (outputFileName.endsWith(".xml")) {
+                    writeXmlOutput(results_m, outputFileName, n_);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-        } catch (Exception e) {
-            e.printStackTrace();
         }
-    }
 
+        private static double performOperation(String operator, double operand1, double operand2) {
+            switch (operator) {
+                case "addition":
+                    return operand1 + operand2;
+                case "subtraction":
+                    return operand1 - operand2;
+                case "multiplication":
+                    return operand1 * operand2;
+                case "division":
+                    return operand1 / operand2;
+                default:
+                    throw new IllegalArgumentException("Unsupported operator: " + operator);
+            }
+        }
 
-    private static void writeXmlOutput(Results[] results_m, String outputFileName, int n_) {
+    private static void writeXmlOutput(Results[] results, String outputFileName, int n_) {
         try {
             DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
-
             Document doc = docBuilder.newDocument();
-            Element rootElement = doc.createElement("arithmeticOperations");
+
+            Element rootElement = doc.createElement("results");
             doc.appendChild(rootElement);
 
-            for (Results result : results_m) {
+            for (int i = 0 ; i < n_ ; i ++) {
                 Element operationElement = doc.createElement("operation");
+                rootElement.appendChild(operationElement);
 
-                Element operatorElement = doc.createElement("operator");
-                operatorElement.appendChild(doc.createTextNode(result.getExpression().substring(1, 2)));
-                operationElement.appendChild(operatorElement);
+                operationElement.setAttribute("id", Integer.toString(results[i].expressionNumber));
 
-                Element operand1Element = doc.createElement("operand1");
-                operand1Element.appendChild(doc.createTextNode(result.getExpression().substring(0, 1)));
-                operationElement.appendChild(operand1Element);
-
-                Element operand2Element = doc.createElement("operand2");
-                operand2Element.appendChild(doc.createTextNode(result.getExpression().substring(3)));
-                operationElement.appendChild(operand2Element);
+                Element expressionElement = doc.createElement("expression");
+                expressionElement.setAttribute("xml:space", "preserve");
+                expressionElement.appendChild(doc.createTextNode(results[i].expression));
+                operationElement.appendChild(expressionElement);
 
                 Element resultElement = doc.createElement("result");
-                resultElement.appendChild(doc.createTextNode(String.valueOf(result.getResult())));
+                resultElement.appendChild(doc.createTextNode(Double.toString(results[i].result)));
                 operationElement.appendChild(resultElement);
-
-                rootElement.appendChild(operationElement);
             }
 
             TransformerFactory transformerFactory = TransformerFactory.newInstance();
             Transformer transformer = transformerFactory.newTransformer();
-
             transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-            transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
-
             DOMSource source = new DOMSource(doc);
-            try (PrintWriter writer = new PrintWriter(outputFileName)) {
-                StreamResult result = new StreamResult(writer);
-                transformer.transform(source, result);
-            }
+            StreamResult result = new StreamResult(new File(outputFileName));
+            transformer.transform(source, result);
 
+            System.out.println("Запись в XML-файл завершена: " + outputFileName);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-
-
-
 
     private static void writeJsonOutput(Results[] results_m, String outputFileName , int n_) {
         try (PrintWriter writer = new PrintWriter(outputFileName)) {
@@ -366,7 +365,9 @@ public class Parser {
             StringBuilder results = new StringBuilder();
 
             for (int i = 0; i < n_; i++) {
-                results.append("  \"number\": \"").append(results_m[i].getExpressionNumber()).append("\n")
+                results.append("\n")
+                        .append("  \"number\": \"").append(results_m[i].getExpressionNumber()).append("\n")
+                        .append("\n")
                         .append("  \"equation\": \"").append(results_m[i].getExpression()).append("\n")
                         .append("  \"result\": ").append(results_m[i].getResult()).append("\n");
             }

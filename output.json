@@ -1,0 +1,24 @@
+{
+  "tasks": [
+    {
+      "task_number": 1,
+      "equation": "5.0 addition 3.0",
+      "result": 8.0
+    },
+    {
+      "task_number": 2,
+      "equation": "10.0 subtraction 4.0",
+      "result": 6.0
+    },
+    {
+      "task_number": 3,
+      "equation": "6.0 multiplication 7.0",
+      "result": 42.0
+    },
+    {
+      "task_number": 4,
+      "equation": "15.0 division 3.0",
+      "result": 5.0
+    }
+  ]
+}

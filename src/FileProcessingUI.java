@@ -6,12 +6,12 @@ import java.io.*;
 
 public class FileProcessingUI extends JFrame {
 
-    private final JTextField fileNameField;
+    final JTextField fileNameField;
 
     JTextField outputFileNameField = new JTextField(10);
 
     JTextField outputFileFormatField = new JTextField(10);
-    private final JTextArea outputArea;
+    final JTextArea outputArea;
 
     public FileProcessingUI() {
         setTitle("Обработка файла");
@@ -69,7 +69,7 @@ public class FileProcessingUI extends JFrame {
         processButton_.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
-                archiveFile();
+                archiveFile(outputFileNameField.getText());
                 outputArea.setText("Файл архивирован");
             }
         });
@@ -104,7 +104,7 @@ public class FileProcessingUI extends JFrame {
 
     }
 
-    private void archiveFile() {
+    void archiveFile(String outputFileName) {
         String fileName = fileNameField.getText();
         boolean isArchived = isArchived(fileName);
 
@@ -112,7 +112,7 @@ public class FileProcessingUI extends JFrame {
                 .isArchived(isArchived)
                 .build();
 
-        archiver.archiveData(fileName);
+        archiver.archiveData(fileName , outputFileName);
     }
 
     private void processFile() {
@@ -155,12 +155,14 @@ public class FileProcessingUI extends JFrame {
         Parser Parser = new Parser.Builder(data.toString())
                 .build();
 
+        //System.out.println(fileName);
+
         //Parser.parseAndProcessFile(fileName, outputFileName_);
 
         outputArea.setText(" Входящий файл : \n" + Parser.parseAndProcessFile(fileName, outputFileName_));
     }
 
-    private static boolean isArchived(String fileName) {
+    static boolean isArchived(String fileName) {
         return fileName.endsWith(".zip") || fileName.endsWith(".rar");
     }
 

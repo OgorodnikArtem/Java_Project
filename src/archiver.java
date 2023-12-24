@@ -81,9 +81,9 @@ class archiver {
     }
 
 
-    public void archiveData(String sourceFileName) {
+    public void archiveData(String sourceFileName ,String outputfileName) {
         try {
-            FileOutputStream fos = new FileOutputStream("output.zip");
+            FileOutputStream fos = new FileOutputStream(outputfileName + "." + "zip");
             ZipOutputStream zipOut = new ZipOutputStream(fos);
             File fileToZip = new File(sourceFileName);
             FileInputStream fis = new FileInputStream(fileToZip);

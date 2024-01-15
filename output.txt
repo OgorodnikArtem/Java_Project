@@ -1,17 +1,13 @@
   "number": "1
 
-  "equation": "5.0 addition 3.0
-  "result": 8.0
+  "equation": "x + c
+  "result": 4.0
   "number": "2
 
-  "equation": "10.0 subtraction 4.0
-  "result": 6.0
+  "equation": "3.0 * x + 2.0 * y
+  "result": 10.0
   "number": "3
 
-  "equation": "6.0 multiplication 7.0
-  "result": 42.0
-  "number": "4
-
-  "equation": "15.0 division 3.0
-  "result": 5.0
+  "equation": "4.0 * a - 6.0
+  "result": 18.0
 

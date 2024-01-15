@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <results>
     <operation id="1">
-        <expression xml:space="preserve">x + c</expression>
-        <result>4.0</result>
+        <expression xml:space="preserve">5+4</expression>
+        <result>9.0</result>
     </operation>
     <operation id="2">
-        <expression xml:space="preserve">3.0 * x + 2.0 * y</expression>
-        <result>10.0</result>
+        <expression xml:space="preserve">2 * 3</expression>
+        <result>6.0</result>
     </operation>
     <operation id="3">
-        <expression xml:space="preserve">4.0 * a - 6.0</expression>
-        <result>18.0</result>
+        <expression xml:space="preserve">5 - 2</expression>
+        <result>3.0</result>
     </operation>
 </results>

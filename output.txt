@@ -1,13 +1,13 @@
   "number": "1
 
-  "equation": "x + c
-  "result": 4.0
+  "equation": "5+4
+  "result": 9.0
   "number": "2
 
-  "equation": "3.0 * x + 2.0 * y
-  "result": 10.0
+  "equation": "2 * 3
+  "result": 6.0
   "number": "3
 
-  "equation": "4.0 * a - 6.0
-  "result": 18.0
+  "equation": "5 - 2
+  "result": 3.0
 

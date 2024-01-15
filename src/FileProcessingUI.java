@@ -4,18 +4,42 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
 
+
+import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
+import javax.sound.sampled.*;
+
+import javazoom.jl.decoder.Bitstream;
+import javazoom.jl.decoder.JavaLayerException;
+import javazoom.jl.player.advanced.AdvancedPlayer;
+import javazoom.jl.player.advanced.PlaybackEvent;
+import javazoom.jl.player.advanced.PlaybackListener;
+
+import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+
+
 public class FileProcessingUI extends JFrame {
+
+    private static Clip clip;
+
+    static int n = 0;
 
     final JTextField fileNameField;
 
     JTextField outputFileNameField = new JTextField(10);
 
     JTextField outputFileFormatField = new JTextField(10);
-    final JTextArea outputArea;
+
+    static JTextArea outputArea;
 
     public FileProcessingUI() {
-
-        this.setVisible(true);
 
         setTitle("Обработка файла");
         setSize(2000, 500);
@@ -27,12 +51,14 @@ public class FileProcessingUI extends JFrame {
         JButton processButton_encryptor = new JButton("Зашифровать");
         JButton processButton_decryptor = new JButton("Расшифровать");
         JButton processButton_e = new JButton("Остановить");
-        outputArea = new JTextArea(10, 10);
+        JButton processButton_O = new JButton("Тесты возможностей UI");
+        outputArea = new JTextArea(20, 10);
 
 
         setLayout(new BorderLayout());
 
         JPanel inputPanel = new JPanel();
+
         inputPanel.add(new JLabel("Имя файла: "));
         inputPanel.add(fileNameField);
         inputPanel.add(new JLabel("Имя выходного файла: "));
@@ -44,9 +70,36 @@ public class FileProcessingUI extends JFrame {
         inputPanel.add(processButton_encryptor);
         inputPanel.add(processButton_decryptor);
         inputPanel.add(processButton_e);
+        inputPanel.add(processButton_O);
 
         add(inputPanel, BorderLayout.NORTH);
         add(new JScrollPane(outputArea), BorderLayout.CENTER);
+
+
+
+
+        Timer timer = new Timer(5000, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Color randomColor = new Color(
+                        (int) (Math.random() * 256),
+                        (int) (Math.random() * 256),
+                        (int) (Math.random() * 256)
+                );
+
+
+                Color randomColor_ = new Color(
+                        (int) (Math.random() * 256),
+                        (int) (Math.random() * 256),
+                        (int) (Math.random() * 256)
+                );
+
+                inputPanel.setBackground(randomColor);
+
+                outputArea.setBackground(randomColor_);
+            }
+        });
+
 
         processButton.addActionListener(new ActionListener() {
             @Override
@@ -83,6 +136,143 @@ public class FileProcessingUI extends JFrame {
                 System.exit(0);
             }
         });
+
+
+        processButton_O.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                String filepath_ = "D:\\Java\\Java_Project\\7b7f.gif";
+
+                displayGif(inputPanel , filepath_);
+
+                if(n == 0){
+                    stopSound();
+                    playSound("D:\\Java\\Java_Project\\rick-astley-never-gonna-give-you-up.wav" , 0);
+                    n++;
+                }else if(n == 1){
+                    stopSound();
+                    playSound("D:\\Java\\Java_Project\\Mr President – Coco Jamboo.wav" , 57300);
+                    n++;
+                }else if(n == 2){
+                    stopSound();
+                    playSound("D:\\Java\\Java_Project\\homie_-_bezumno-mozhno-byt-pervym.wav" , 90000);
+                    n = 0;
+                }
+                timer.start();
+
+            }
+        });
+
+
+
+    }
+
+
+    public static void playSound(String soundFilePath, int startFromMillis) {
+        try {
+            File soundFile = new File(soundFilePath);
+            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(soundFile);
+
+            clip = AudioSystem.getClip();
+            clip.open(audioInputStream);
+            clip.setMicrosecondPosition(startFromMillis * 1000);
+            clip.start();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void stopSound() {
+        if (clip != null && clip.isRunning()) {
+            clip.stop();
+        }
+    }
+
+
+    public static void displayGif(JPanel panel, String gifFilePath) {
+
+        try {
+            ImageIcon icon = new ImageIcon("D:\\Java\\Java_Project\\7b7f.gif");
+            JLabel label = new JLabel(icon);
+
+            panel.removeAll();
+            panel.add(label);
+            JButton processButton_e = new JButton("Остановить");
+            panel.add(processButton_e);
+
+            JButton processButton_O = new JButton("БОЛЬШЕ МУЗЫКИ");
+            panel.add(processButton_O);
+
+            processButton_O.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+
+                    String filepath_ = "D:\\Java\\Java_Project\\Aq.gif";
+
+                    displayGif(panel , filepath_);
+
+
+                    if(n == 0){
+                        stopSound();
+                        playSound("D:\\Java\\Java_Project\\rick-astley-never-gonna-give-you-up.wav" , 0);
+                        n++;
+                    }else if(n == 1){
+                        stopSound();
+                        playSound("D:\\Java\\Java_Project\\Mr President – Coco Jamboo.wav" , 57300);
+                        n++;
+                    }else if(n == 2){
+                        stopSound();
+                        playSound("D:\\Java\\Java_Project\\homie_-_bezumno-mozhno-byt-pervym.wav" , 90000);
+                        n++;
+                    }else if(n == 3){
+                        stopSound();
+                        playSound("D:\\Java\\Java_Project\\Bury The Light (Mission 20).wav" , 0);
+                        n = 0;
+                    }
+
+                    timer.start();
+
+                }
+
+
+                Timer timer = new Timer(5000, new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        Color randomColor = new Color(
+                                (int) (Math.random() * 256),
+                                (int) (Math.random() * 256),
+                                (int) (Math.random() * 256)
+                        );
+
+
+                        Color randomColor_ = new Color(
+                                (int) (Math.random() * 256),
+                                (int) (Math.random() * 256),
+                                (int) (Math.random() * 256)
+                        );
+
+                        panel.setBackground(randomColor);
+
+                        outputArea.setBackground(randomColor_);
+                    }
+                });
+            });
+
+
+            processButton_e.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    System.exit(0);
+                }
+            });
+
+            panel.revalidate();
+            panel.repaint();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void EncryptFile() {

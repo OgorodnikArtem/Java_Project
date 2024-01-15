@@ -50,5 +50,8 @@
     <orderEntry type="library" name="Java_Project" level="project" />
     <orderEntry type="library" name="fest-swing" level="project" />
     <orderEntry type="library" name="easytesting.fest.swing" level="project" />
+    <orderEntry type="library" name="mariuszgromada.math.MathParser.mXparser" level="project" />
+    <orderEntry type="library" name="openjdk-21.0" level="project" />
+    <orderEntry type="library" name="amazon.alexa.ask.sdk.freemarker" level="project" />
   </component>
 </module>

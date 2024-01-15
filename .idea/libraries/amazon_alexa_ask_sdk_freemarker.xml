@@ -1,0 +1,17 @@
+<component name="libraryTable">
+  <library name="amazon.alexa.ask.sdk.freemarker" type="repository">
+    <properties maven-id="com.amazon.alexa:ask-sdk-freemarker:2.44.0" />
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/ask-sdk-freemarker-2.44.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/ask-sdk-runtime-2.44.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/jackson-core-2.12.6.jar!/" />
+      <root url="jar://$PROJECT_DIR$/jackson-databind-2.12.6.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/jackson-datatype-jsr310-2.12.6.jar!/" />
+      <root url="jar://$PROJECT_DIR$/jackson-annotations-2.12.6.jar!/" />
+      <root url="jar://$PROJECT_DIR$/freemarker-2.3.28.jar!/" />
+      <root url="jar://$PROJECT_DIR$/slf4j-api-1.7.10.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

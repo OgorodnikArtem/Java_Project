@@ -1,19 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <results>
     <operation id="1">
-        <expression xml:space="preserve">5.0 addition 3.0</expression>
-        <result>8.0</result>
-    </operation>
-    <operation id="2">
-        <expression xml:space="preserve">10.0 subtraction 4.0</expression>
-        <result>6.0</result>
-    </operation>
-    <operation id="3">
-        <expression xml:space="preserve">6.0 multiplication 7.0</expression>
-        <result>42.0</result>
-    </operation>
-    <operation id="4">
-        <expression xml:space="preserve">15.0 division 3.0</expression>
-        <result>5.0</result>
+        <expression xml:space="preserve">4 + 5</expression>
+        <result>9.0</result>
     </operation>
 </results>

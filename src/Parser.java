@@ -26,7 +26,6 @@ import javax.xml.transform.stream.StreamResult;
 
 
 
-
 import javax.xml.transform.*;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
@@ -101,7 +100,7 @@ public class Parser {
             System.err.println("Нет данных для обработки.");
             return;
         }
-        String regex = "((\\d+\\s*[+\\-*/]\\s*\\d+)|(\\d+(?:\\s*[+\\-*/]\\s*\\d+)*))"; // Updated regex
+        String regex = "((\\d+\\s*[+\\-*/]\\s*\\d+)|(\\d+(?:\\s*[+\\-*/]\\s*\\d+)*))";
         try {
             Pattern pattern = Pattern.compile(regex);
             Matcher matcher = pattern.matcher(data);
@@ -118,7 +117,7 @@ public class Parser {
 
             Results[] result_ = resultsList.toArray(new Results[0]);
 
-            int l_ = resultsList.size(); // Use the size() method to get the number of expressions
+            int l_ = resultsList.size();
 
             if (outputFileName.endsWith(".txt")) {
                 writeTxtOutput(result_, outputFileName, l_);
@@ -133,7 +132,7 @@ public class Parser {
     }
 
 
-    private static double evaluateExpression(String expression) {
+    static double evaluateExpression(String expression) {
         Stack<Double> operands = new Stack<>();
         Stack<Character> operators = new Stack<>();
 
@@ -288,7 +287,7 @@ public class Parser {
             }
         }
 
-    private static void writeXmlOutput(Results[] results, String outputFileName, int n_) {
+    static void writeXmlOutput(Results[] results, String outputFileName, int n_) {
         try {
             DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
@@ -326,7 +325,7 @@ public class Parser {
         }
     }
 
-    private static void writeJsonOutput(Results[] results_m, String outputFileName , int n_) {
+    static void writeJsonOutput(Results[] results_m, String outputFileName, int n_) {
         try (PrintWriter writer = new PrintWriter(outputFileName)) {
             StringBuilder results = new StringBuilder();
             results.append("{\n  \"tasks\": [\n");
@@ -359,7 +358,7 @@ public class Parser {
         }
     }
 
-    private static void writeTxtOutput(Results[] results_m, String outputFileName , int n_) {
+    static void writeTxtOutput(Results[] results_m, String outputFileName, int n_) {
         try (PrintWriter writer = new PrintWriter(outputFileName)) {
             StringBuilder results = new StringBuilder();
 

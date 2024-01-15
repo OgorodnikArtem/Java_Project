@@ -32,7 +32,6 @@ public class FileEncryptor {
             return new FileEncryptor(this);
         }
     }
-   // private static final int KEY = 123;
 
 
     private static Key generateKey() {
